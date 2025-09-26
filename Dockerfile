@@ -29,11 +29,12 @@ RUN apt update && apt install -y \
     && apt clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Crear usuario netmiko con permisos sudo
-RUN adduser --disabled-password --gecos "" netmiko \
-    && usermod -aG sudo netmiko
+# Crear usuario netmiko sin contraseña y con permisos sudo
+RUN useradd -ms /bin/bash netmiko \
+    && usermod -aG sudo netmiko \
+    && echo "netmiko ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-# Cambiar a usuario netmiko
+# Cambiar al usuario netmiko
 USER netmiko
 WORKDIR /home/netmiko
 
@@ -42,3 +43,4 @@ EXPOSE 80 3306 22
 
 # Comando por defecto al iniciar
 CMD ["bash"]
+
