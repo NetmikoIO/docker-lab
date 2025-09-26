@@ -1,46 +1,54 @@
-# Docker Lab Environment
+# Docker Lab - Ubuntu 24.04
 
-This repository contains a **Dockerfile** to build a complete Ubuntu 24.04-based lab environment for networking, system administration, and database practice.
+A personal lab environment built with Docker for networking, development, and database practice.
 
----
+## Overview
+
+This Docker image provides a lightweight Ubuntu 24.04 environment with essential tools for networking, database, and system administration. It is designed for hands-on experimentation in a safe containerized setup.
 
 ## Features
 
 - **Base OS:** Ubuntu 24.04
 - **User:** `netmiko` with sudo privileges
-- **Networking tools:** `net-tools`, `iproute2`, `iputils-ping`, `dnsutils`, `tcpdump`, `nmap`, `traceroute`, `iperf3`
-- **Web & Database:** `nginx`, `mariadb-server`, `mariadb-client`
-- **Development tools:** `vim`, `git`, `curl`, `wget`, `python3`, `python3-pip`
-- **SSH:** `openssh-client` and `openssh-server`
-
----
+- **Root access** available inside the container
+- **Installed tools:**
+  - Networking: `net-tools`, `iproute2`, `iputils-ping`, `dnsutils`, `tcpdump`, `nmap`, `traceroute`, `iperf3`
+  - Database: `mariadb-server`, `mariadb-client`
+  - Web server: `nginx`
+  - Development: `python3`, `python3-pip`, `vim`, `git`, `curl`, `wget`
+  - SSH: `openssh-client`, `openssh-server`
+  
+- **Exposed ports for testing:**
+  - `80` → Nginx web server
+  - `3306` → MariaDB
+  - `22` → SSH
 
 ## Usage
 
-1. **Build the Docker image:**
-
+### Build the Docker image
 ```bash
 docker build -t docker-lab:latest .
 ```
-
-2. **Run a container interactively:**
+Run the container
 ```bash
-docker run -it -p 80:80 -p 3306:3306 -p 22:22 docker-lab:latest
+docker run -it -p 8080:80 -p 3306:3306 -p 2222:22 --name lab-container docker-lab:latest
 ```
-You will start as the netmiko user in /home/netmiko.
+Access container as root
+```bash
+docker exec -it -u root lab-container 
+```
 
-Exposed Ports
-- 80 → Nginx web server
+Access container as netmiko
+```bash
+docker exec -it -u netmiko lab-container bash
+```
 
-- 3306 → MariaDB server
+## Notes
+All changes are ephemeral unless committed to a Docker volume or rebuilt into the image.
 
-- 22 → SSH server
+Designed for safe lab experimentation; do not expose sensitive services to public networks.
 
-Notes
-Designed for learning and practicing networking, databases, and system administration inside Docker containers.
+Ideal for learning Docker, networking, databases, and Linux system administration.
 
-The container is lightweight and comes with essential tools for a homelab environment.
-
-Author
-NetmikoIO
-GitHub
+License
+MIT License
